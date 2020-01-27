@@ -1,0 +1,123 @@
+{% extends "base.html.twig" %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function () {
+
+          const store = new Vuex.Store({
+              state: {
+                  products: [],
+              },
+              getters: {
+                  products ({ products }) {
+                      return products;
+                  },
+              },
+              actions: {
+                  loadData({commit}) {
+                          axios.get('/back/products').then(function(response){
+                              commit('setProducts', response.data.message);
+                          }).catch(function (error) {
+                              console.log("error returning list of products");
+                          })
+                  },
+                  saveData({commit},payload) {
+
+                      axios.post('/back/save',payload).then(function(response) {
+                          var responseObject = response.data;
+                          console.log("Producto guardado");
+                          console.log(response.data.message);
+
+                      }).catch(function (error) {
+                          console.log("error saving product");
+                      })
+                  }
+              },
+              mutations: {
+                  setProducts(state, products) {
+                      state.products = products;
+                  }
+              }
+          });
+
+
+          const app = new Vue({
+                store: store,
+                delimiters: ['<%', '%>'],
+                el: '#app',
+                data: {
+                    products:[],
+                    name: null,
+                    price: null,
+                    barcode: null,
+                    errors:[]
+                },
+                methods: {
+                    checkForm: function (e) {
+                        e.preventDefault();
+                        this.errors = [];
+
+                        if (!this.name) {
+                            this.errors.push("El nombre de producto es obligatorio.");
+                        }
+
+                        if (!this.price) {
+                            this.errors.push('El precio de producto es obligatorio.');
+                        }
+
+                        if (!this.barcode) {
+                            this.errors.push('El barcode de producto es obligatorio.');
+                        }
+
+                        if (!this.errors.length) {
+
+
+                            var payload= {name: this.name, price:this.price, barcode: this.barcode};
+                            this.$store.dispatch('saveData', payload);
+                            this.$store.dispatch('loadData'); // dispatc
+
+                            this.products = this.$store.getters.products; //
+                            console.log(this.products);
+
+                        }
+
+
+                    }
+                }
+            })
+       })
+    </script>
+{% endblock %}
+{% block content %}
+    <form id="app" @submit.prevent="checkForm" name="app" method="POST">
+
+        <p v-if="errors.length">
+            <b>Please correct the following error(s):</b>
+        <ul>
+            <li v-for="error in errors"><% error %></li>
+        </ul>
+        <ul>
+            <li v-for="(product) in products" :key="product.id">
+                <p><% product.name %></p>
+            </li>
+        </ul>
+        </p>
+        <p>
+            <label for="name">Name<label><input type="text" name="name" id="name" v-model="name">
+        </p>
+        <p>
+            <label for="age">Price<label><input type="text" name="price" id="price" v-model="price" min="0">
+        </p>
+        <p>
+            <label for="barcode">Barcode<label><input type="text" name="barcode" id="barcode" v-model="barcode" min="0">
+        </p>
+        <p>
+            <input type="submit" value="Submit">
+        </p>
+
+    </form>
+{% endblock %}

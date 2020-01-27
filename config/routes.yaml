@@ -1,0 +1,14 @@
+index:
+    path: /
+    controller: App\Controller\Frontend\IndexController::index
+    methods: [GET]
+
+save:
+    path: /back/save
+    controller: App\Controller\Backend\SaveController::index
+    methods: [POST]
+
+products:
+    path: /back/products
+    controller: App\Controller\Backend\GetAllProductsController::index
+    methods: [GET]
