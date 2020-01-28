@@ -41,7 +41,7 @@ class SaveController
                 return new JsonResponse([
                     'success' => false,
                     'code' => Response::BAD_REQUEST,
-                    'message' => "Barcode requerido para guardar producto",
+                    'message' => "Price es requerido para guardar producto",
                 ]);
             }
 
