@@ -8,7 +8,19 @@ use Response;
 
 class SaveController
 {
+    protected function isValidField(string $field) : bool
+    {
+        return ((!isset($field)) || (empty($field))) ? false : true;
+    }
 
+    /**
+     * Returns a JSON Response including the whole list of products in case of success
+     * @param Request request
+     * @param ProductService $productService
+     * @param TransformerService $transformer
+     * @return JsonResponse
+     *
+     */
     public function index(Request $request, ProductService $productService) : JsonResponse
     {
 
@@ -25,15 +37,7 @@ class SaveController
                 ]);
             }
 
-            if ((!isset($paramsPost['price'])) && (!empty($paramsPost['price']))){
-                return new JsonResponse([
-                    'success' => false,
-                    'code' => Response::BAD_REQUEST,
-                    'message' => "Precio requerido para guardar producto",
-                ]);
-            }
-
-            if ((!isset($paramsPost['barcode'])) && (!empty($paramsPost['barcode']))){
+            if (!$this->isValidField($paramsPost['price'])){
                 return new JsonResponse([
                     'success' => false,
                     'code' => Response::BAD_REQUEST,
@@ -41,7 +45,15 @@ class SaveController
                 ]);
             }
 
-            if ((!isset($paramsPost['name'])) && (!empty($paramsPost['name']))){
+            if (!$this->isValidField($paramsPost['barcode'])){
+                return new JsonResponse([
+                    'success' => false,
+                    'code' => Response::BAD_REQUEST,
+                    'message' => "Barcode requerido para guardar producto",
+                ]);
+            }
+
+            if (!$this->isValidField($paramsPost['name'])){
                 return new JsonResponse([
                     'success' => false,
                     'code' => Response::BAD_REQUEST,
@@ -59,21 +71,8 @@ class SaveController
             $data->price = $price;
             $data->barcode = $barcode;
 
-
-
             $product = $productService->create($data);
-            try {
-                $productService->getEntityManager()->persist($product);
-                $productService->getEntityManager()->flush();
-            }catch(\Exception $e) {
-                return new JsonResponse([
-                    'success' => false,
-                    'code' => 200,
-                    'message' => $e->getMessage(),
-                ]);
-            }
-
-            //$productService->save($product);
+            $productService->save($product);
 
             return new JsonResponse([
                 'success' => false,

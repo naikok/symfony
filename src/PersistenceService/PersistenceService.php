@@ -13,7 +13,13 @@ abstract class PersistenceService
         $this->entityManager = $entityManager;
     }
 
-    public function getEntityManager() : EntityManagerInterface
+    /**
+     * Get doctrine entityManager
+     * @return EntityManagerInterface
+     *
+     */
+
+    protected function getEntityManager() : EntityManagerInterface
     {
         return $this->entityManager;
     }

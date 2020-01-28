@@ -1,10 +1,16 @@
 <?php
-namespace App\Service;
+namespace App\Service\Transformer;
 
-Use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerBuilder;
 
 class TransformerService
 {
+    /**
+     * Transform entities to array of stdclass
+     * @param array $object contain an entity of any type
+     * @return \Stclass[]
+     *
+     */
 
     public function transform(array $object) : array
     {
