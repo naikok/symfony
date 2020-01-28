@@ -15,7 +15,7 @@ class SaveController
 
     /**
      * Returns a JSON Response including the whole list of products in case of success
-     * @param Request request
+     * @param Request $request
      * @param ProductService $productService
      * 
      * @return JsonResponse
