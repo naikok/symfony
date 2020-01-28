@@ -29,11 +29,11 @@
 
                       axios.post('/back/save',payload).then(function(response) {
                           var responseObject = response.data;
-                          console.log("Producto guardado");
+                          alert("Producto guardado, introduce alguno más para ver la lista...");
                           console.log(response.data.message);
 
                       }).catch(function (error) {
-                          console.log("error saving product");
+                          alert("error al guardar producto");
                       })
                   }
               },
@@ -58,7 +58,7 @@
                 },
                 methods: {
                     checkForm: function (e) {
-                        e.preventDefault();
+                     
                         this.errors = [];
 
                         if (!this.name) {
@@ -85,7 +85,7 @@
 
                         }
 
-
+                        e.preventDefault();
                     }
                 }
             })
